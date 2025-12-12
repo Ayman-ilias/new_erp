@@ -18,9 +18,14 @@ async function proxyRequest(request: NextRequest, path: string[]) {
       }
     });
 
+    // Add timeout to prevent hanging requests
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+
     const fetchOptions: RequestInit = {
       method: request.method,
       headers,
+      signal: controller.signal,
     };
 
     // Include body for non-GET requests
@@ -31,25 +36,41 @@ async function proxyRequest(request: NextRequest, path: string[]) {
       }
     }
 
-    const response = await fetch(targetUrl, fetchOptions);
+    try {
+      const response = await fetch(targetUrl, fetchOptions);
+      clearTimeout(timeoutId);
 
-    // Get response body
-    const responseBody = await response.text();
+      // Get response body
+      const responseBody = await response.text();
 
-    // Create response headers
-    const responseHeaders = new Headers();
-    response.headers.forEach((value, key) => {
-      // Skip headers that Next.js will handle
-      if (!['content-encoding', 'transfer-encoding', 'connection'].includes(key.toLowerCase())) {
-        responseHeaders.set(key, value);
+      // Create response headers
+      const responseHeaders = new Headers();
+      response.headers.forEach((value, key) => {
+        // Skip headers that Next.js will handle
+        if (!['content-encoding', 'transfer-encoding', 'connection'].includes(key.toLowerCase())) {
+          responseHeaders.set(key, value);
+        }
+      });
+
+      return new NextResponse(responseBody, {
+        status: response.status,
+        statusText: response.statusText,
+        headers: responseHeaders,
+      });
+    } catch (fetchError) {
+      clearTimeout(timeoutId);
+
+      // Check if it's an abort error (timeout)
+      if (fetchError instanceof Error && fetchError.name === 'AbortError') {
+        console.error('[API Proxy] Request timeout:', targetUrl);
+        return NextResponse.json(
+          { detail: 'Request timeout - operation may have completed' },
+          { status: 504 } // Gateway Timeout
+        );
       }
-    });
 
-    return new NextResponse(responseBody, {
-      status: response.status,
-      statusText: response.statusText,
-      headers: responseHeaders,
-    });
+      throw fetchError; // Re-throw for outer catch block
+    }
   } catch (error) {
     console.error('[API Proxy] Error:', error);
     return NextResponse.json(
