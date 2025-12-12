@@ -1,0 +1,60 @@
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:15-alpine
+    container_name: rmg_erp_postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=rmg_erp
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - erp-network
+    restart: unless-stopped
+
+  # Backend API (FastAPI + PostgreSQL)
+  backend:
+    build:
+      context: ./shad-theme-dashboard/backend
+    image: rmg-erp-backend:latest
+    container_name: rmg_erp_backend
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=rmg_erp
+      - SECRET_KEY=your-super-secret-key-change-in-production-2024
+      - ENVIRONMENT=production
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    networks:
+      - erp-network
+    restart: unless-stopped
+
+  # Frontend Next.js App
+  frontend:
+    build:
+      context: ./shad-theme-dashboard
+      dockerfile: Dockerfile.frontend
+    image: rmg-erp-frontend:latest
+    container_name: rmg_erp_frontend
+    ports:
+      - "2222:3000"
+    depends_on:
+      - backend
+    networks:
+      - erp-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  erp-network:
+    driver: bridge
