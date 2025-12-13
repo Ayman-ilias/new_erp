@@ -27,7 +27,7 @@ def create_supplier(supplier_data: SupplierCreate, db: Session = Depends(get_db)
 
 
 @router.get("/", response_model=List[SupplierResponse])
-def get_suppliers(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+def get_suppliers(skip: int = 0, limit: int = 10000, db: Session = Depends(get_db)):
     """Get all suppliers"""
     suppliers = db.query(Supplier).order_by(Supplier.id.desc()).offset(skip).limit(limit).all()
     return suppliers

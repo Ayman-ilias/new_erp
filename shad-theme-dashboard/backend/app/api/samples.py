@@ -504,10 +504,10 @@ def create_sample(sample_data: SampleCreate, db: Session = Depends(get_db)):
 def get_samples(
     buyer_id: int = None,
     skip: int = Query(default=0, ge=0),
-    limit: int = Query(default=20, ge=1, le=100),
+    limit: int = Query(default=10000, ge=1, le=10000),
     db: Session = Depends(get_db)
 ):
-    """Get all samples (max 100 per request), optionally filtered by buyer"""
+    """Get all samples, optionally filtered by buyer"""
     query = db.query(Sample)
     if buyer_id:
         query = query.filter(Sample.buyer_id == buyer_id)

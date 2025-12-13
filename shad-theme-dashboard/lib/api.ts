@@ -77,7 +77,7 @@ export const api = {
   buyers: {
     getAll: async () => {
       try {
-        const response = await fetch(`${API_URL}/api/v1/buyers`);
+        const response = await fetch(`${API_URL}/api/v1/buyers?limit=10000`);
         if (!response.ok) {
           throw new Error(`Failed to fetch buyers: ${response.status}`);
         }
@@ -121,7 +121,7 @@ export const api = {
   suppliers: {
     getAll: async () => {
       try {
-        const response = await fetch(`${API_URL}/api/v1/suppliers`, {
+        const response = await fetch(`${API_URL}/api/v1/suppliers?limit=10000`, {
           headers: { 'Content-Type': 'application/json' },
         });
         if (!response.ok) {
@@ -176,7 +176,7 @@ export const api = {
   // Sample endpoints
   samples: {
     getAll: async () => {
-      const response = await fetch(`${API_URL}/api/v1/samples`);
+      const response = await fetch(`${API_URL}/api/v1/samples?limit=10000`);
       return response.json();
     },
     getById: async (id: number) => {
@@ -336,7 +336,7 @@ export const api = {
   // Order Management endpoints
   orders: {
     getAll: async () => {
-      const response = await fetch(`${API_URL}/api/v1/orders`);
+      const response = await fetch(`${API_URL}/api/v1/orders?limit=10000`);
       return response.json();
     },
     getById: async (id: number) => {

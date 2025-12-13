@@ -45,7 +45,7 @@ def get_orders(
     buyer_id: int = None,
     order_status: str = None,
     skip: int = 0,
-    limit: int = 100,
+    limit: int = 10000,
     db: Session = Depends(get_db)
 ):
     """Get all orders with optional filters"""

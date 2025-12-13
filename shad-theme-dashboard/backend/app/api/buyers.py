@@ -104,10 +104,10 @@ def create_buyer(buyer_data: BuyerCreate, db: Session = Depends(get_db)):
 @router.get("/", response_model=List[BuyerResponse])
 def get_buyers(
     skip: int = Query(default=0, ge=0, description="Number of records to skip"),
-    limit: int = Query(default=20, ge=1, le=100, description="Max 100 records per request"),
+    limit: int = Query(default=10000, ge=1, le=10000, description="Max records per request"),
     db: Session = Depends(get_db)
 ):
-    """Get all buyers with pagination (max 100 per request)"""
+    """Get all buyers"""
     buyers = db.query(Buyer).order_by(Buyer.id.desc()).offset(skip).limit(limit).all()
     return buyers
 
