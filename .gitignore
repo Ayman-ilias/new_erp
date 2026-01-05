@@ -1,0 +1,74 @@
+# ==============================================================================
+# SOUTHERN APPARELS ERP - GIT IGNORE
+# ==============================================================================
+
+# Dependencies
+node_modules/
+/.pnp
+.pnp.js
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+.venv/
+*.egg-info/
+
+# Next.js build output
+.next/
+out/
+build/
+dist/
+
+# Testing
+coverage/
+.coverage
+htmlcov/
+.pytest_cache/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+
+# Local environment overrides (don't track these)
+frontend/.env.local
+.env.local
+*.local
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Temporary files
+*.tmp
+.cache/
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+
+# Claude
+.claude/
+
+# MCP
+mcp_memory_storage/
