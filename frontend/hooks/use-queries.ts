@@ -924,17 +924,17 @@ export function useDeleteMaterial() {
 }
 
 // ============================================================================
-// COLORS HOOKS
+// MASTER COLORS HOOKS (for garment colors in master data)
 // ============================================================================
 
-export function useColors(category?: string) {
+export function useMasterColors(category?: string) {
   return useQuery({
     queryKey: [QUERY_KEYS.MASTER.COLORS.LIST(category).key],
     queryFn: () => colorsService.getAll(category),
   });
 }
 
-export function useColor(id: number) {
+export function useMasterColor(id: number) {
   return useQuery({
     queryKey: [QUERY_KEYS.MASTER.COLORS.DETAIL(id).key],
     queryFn: () => colorsService.getById(id),
@@ -942,7 +942,7 @@ export function useColor(id: number) {
   });
 }
 
-export function useCreateColor() {
+export function useCreateMasterColor() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: Record<string, any>) => colorsService.create(data),
@@ -954,7 +954,7 @@ export function useCreateColor() {
   });
 }
 
-export function useUpdateColor() {
+export function useUpdateMasterColor() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id, data }: { id: number; data: Record<string, any> }) =>
@@ -970,7 +970,7 @@ export function useUpdateColor() {
   });
 }
 
-export function useDeleteColor() {
+export function useDeleteMasterColor() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: number) => colorsService.delete(id),
