@@ -1528,10 +1528,61 @@ Added custom hooks in `hooks/use-queries.ts`:
 
 ### Result
 
-✅ **Automatic caching**: Data cached for 5-10 minutes  
-✅ **No duplicate calls**: Same query params = uses cache  
-✅ **Auto refetch**: Only when stale or invalidated  
-✅ **Cleaner code**: ~200 lines less manual state management  
+✅ **Automatic caching**: Data cached for 5-10 minutes
+✅ **No duplicate calls**: Same query params = uses cache
+✅ **Auto refetch**: Only when stale or invalidated
+✅ **Cleaner code**: ~200 lines less manual state management
 ✅ **Better UX**: Instant data display from cache, background updates
+
+---
+
+## 2026-01-05: GitHub Push & Server Deployment Configuration
+
+### Changes Made
+
+#### 1. Frontend Port Changed to 2222
+- Updated `.env` file: `FRONTEND_PORT=2222`
+- Docker compose maps `2222:3000` (host port 2222 → container port 3000)
+
+#### 2. Code Pushed to GitHub
+- Repository: https://github.com/Ayman-ilias/new_erp.git
+- All previous code deleted and replaced with current codebase
+- Force pushed to overwrite existing repo
+
+#### 3. Created Data Migration Guide
+- Created `MIGRATION.md` with detailed instructions
+- Export data using `pg_dump` from local Docker containers
+- Transfer backups to server
+- Import data using `psql` on server
+
+### Files Modified
+- `.env` - Changed FRONTEND_PORT from 3000 to 2222
+- `.gitignore` - Created root gitignore
+- `backend/.gitignore` - Updated to track .env
+- `frontend/.gitignore` - Updated to track .env files (except .env.local)
+- `MIGRATION.md` - Created data migration guide
+
+### Data Migration Quick Commands
+
+**Export (Local):**
+```bash
+mkdir -p backups
+for db in clients samples users orders merchandiser settings; do
+  docker exec southern-erp_db_$db pg_dump -U postgres -d rmg_erp_$db > backups/db_$db.sql
+done
+```
+
+**Import (Server):**
+```bash
+for db in clients samples users orders merchandiser settings; do
+  cat backups/db_$db.sql | docker exec -i southern-erp_db_$db psql -U postgres -d rmg_erp_$db
+done
+```
+
+### Access Points (After Deployment)
+- **Frontend**: http://server-ip:2222
+- **Backend API**: http://server-ip:8000
+- **API Docs**: http://server-ip:8000/docs
+- **Login**: admin / admin
 
 ---
